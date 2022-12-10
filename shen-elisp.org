@@ -2107,9 +2107,9 @@ It periodically writes to the REPL.
       (unless (get-buffer *shen-repl*)
         (with-current-buffer (get-buffer-create *shen-repl*)
           (make-local-variable 'lexical-binding)
-          (load "shen-primitives.elc")
-          (load "shen-elisp.elc")
-          (load "shen-overlays.elc")
+          (load "shen-primitives")
+          (load "shen-elisp")
+          (load "shen-overlays")
           (setq lexical-binding 't)
           (shen/set 'shen.*history* '())
           (shen/set '*home-directory* "")
@@ -2393,3 +2393,9 @@ KLambda code into Elisp.
       (add-to-list 'load-path default-directory)
       (shen/repl)))
 #+END_SRC
+
+* File local variables                                     :noexport:
+
+# Local Variables:
+# org-src-preserve-indentation: nil
+# End:

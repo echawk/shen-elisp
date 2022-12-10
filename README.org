@@ -16,6 +16,21 @@ Also note the installation will emit a large number of byte-compiler warnings.
 Nothing to worry about but they are annoying and my attempts to silence them
 have thus far failed.
 
+** Manual Download and Setup
+Download shen-elisp onto your system somewhere.
+#+begin_src elisp
+;; add this to your init file in an appropriate location
+(add-to-list 'load-path "~/path/to/shen-elisp/")
+(require 'shen-elisp)
+(require 'shen-repl)
+#+end_src
+
+You should really byte-compile the code; running the following snippet should do it:
+
+#+begin_src elisp
+(byte-recompile-directory "~/path/to/shen-elisp/" 0 t)
+#+end_src
+
 ** Quelpa
 To install the package directly from Github using `quelpa` tool:
 #+BEGIN_EXAMPLE
