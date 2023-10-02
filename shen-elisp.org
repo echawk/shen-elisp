@@ -1611,91 +1611,91 @@ function name or form which when found in Klambda code is replaces with the
                                (setq Result (funcall F Result))))))))
 #+END_SRC
 #+BEGIN_SRC elisp :tangle shen-primitives.el
-  (setq shen/internal/*dict-overrides*
-        '((shen.dict . (defun shen/shen\.dict
-                           (Size)
-                         (let ((Dict (shen/absvector 4))
-                               (Contents (shen/absvector Size)))
-                           (progn
-                             (shen/address-> Dict 0 'dictionary)
-                             (shen/address-> Dict 1 Size)
-                             (shen/address-> Dict 2 0)
-                             (shen/address-> Dict 3 Contents)
-                             Dict))))
-          (shen.dict-> . (defun shen/shen\.dict->
-                             (Dict Key Value)
-                           (let* ((Count (shen/shen\.dict-count Dict))
-                                  (Contents (shen/<-address Dict 3))
-                                  (Exists (shen/<-address Contents Key)))
-                             (progn
-                               (if (not Exists)
-                                   (shen/address-> Dict 2 (1+ Count)))
-                               (shen/address-> Contents Key Value)))))
-          (shen.<-dict . (defun shen/shen\.<-dict
-                             (Dict Key)
-                           (let* ((Contents (shen/<-address Dict 3))
-                                  (Existing (shen/<-address Contents Key)))
-                             (if (not Existing)
-                                 (shen/freeze (shen/simple-error "value not found"))
-                               Existing))))
-          (shen.dict-rm . (defun shen/shen\.dict-rm
-                              (Dict Key)
-                            (let* ((Count (shen/shen\.dict-count Dict))
-                                   (Contents (shen/<-address Dict 3))
-                                   (Exists (shen/<-address Contents Key)))
-                              (if (not Exists)
-                                  Key
-                                (progn
-                                  (remhash Key Contents)
-                                  (shen/address-> Dict 2 (1- Count))
-                                  Key)))))
-          (shen.dict-keys . (defun shen/shen\.dict-keys
-                                (Dict)
-                              (let* ((Contents (shen/<-address Dict 3)))
-                                (hash-table-keys Contents))))
-          (shen.dict-values . (defun shen/shen\.dict-values
-                                  (Dict)
-                                (let* ((Contents (shen/<-address Dict 3)))
-                                  (hash-table-values Contents))))
-          (shen.dict-fold . (defun shen/shen\.dict-fold
-                                (F Dict Acc)
-                              (let ((Contents (shen/<-address Dict 3)))
-                                (progn
-                                  (setq NewAcc Acc)
-                                  (maphash
-                                   (lambda (Key Value)
-                                     (setq NewAcc (shen/internal/apply-higher-order-function F (list Key Value NewAcc))))
-                                   Contents)
-                                  NewAcc))))
-          (put . (defun shen/put
-                     (X Pointer Y Dict)
-                   (let* ((Contents (shen/<-address Dict 3))
-                          (X-Contents (shen/<-address Contents X)))
-                     (if X-Contents
-                         (progn
-                           (puthash Pointer Y X-Contents)
-                           Y)
-                       (progn
-                         (setq X-Contents (shen/absvector 100))
-                         (puthash X X-Contents Contents)
-                         (puthash Pointer Y X-Contents)
-                         Y)))))
-          (unput . (defun shen/unput
-                       (X Pointer Dict)
-                     (let* ((Contents (shen/<-address Dict 3))
-                            (X-Contents (shen/<-address Contents X)))
-                       (progn
-                         (if X-Contents
-                             (remhash Pointer X-Contents))
-                         X))))
-          (get . (defun shen/get
-                     (X Pointer Dict)
-                   (let* ((Contents (shen/<-address Dict 3))
-                          (X-Contents (shen/<-address Contents X))
-                          (Pointer-Contents (if X-Contents (shen/<-address X-Contents Pointer))))
-                     (if (not Pointer-Contents)
-                         (shen/simple-error "value not found")
-                       Pointer-Contents))))))
+;;  (setq shen/internal/*dict-overrides*
+;;        '((shen.dict . (defun shen/shen\.dict
+;;                           (Size)
+;;                         (let ((Dict (shen/absvector 4))
+;;                               (Contents (shen/absvector Size)))
+;;                           (progn
+;;                             (shen/address-> Dict 0 'dictionary)
+;;                             (shen/address-> Dict 1 Size)
+;;                             (shen/address-> Dict 2 0)
+;;                             (shen/address-> Dict 3 Contents)
+;;                             Dict))))
+;;          (shen.dict-> . (defun shen/shen\.dict->
+;;                             (Dict Key Value)
+;;                           (let* ((Count (shen/shen\.dict-count Dict))
+;;                                  (Contents (shen/<-address Dict 3))
+;;                                  (Exists (shen/<-address Contents Key)))
+;;                             (progn
+;;                               (if (not Exists)
+;;                                   (shen/address-> Dict 2 (1+ Count)))
+;;                               (shen/address-> Contents Key Value)))))
+;;          (shen.<-dict . (defun shen/shen\.<-dict
+;;                             (Dict Key)
+;;                           (let* ((Contents (shen/<-address Dict 3))
+;;                                  (Existing (shen/<-address Contents Key)))
+;;                             (if (not Existing)
+;;                                 (shen/freeze (shen/simple-error "value not found"))
+;;                               Existing))))
+;;          (shen.dict-rm . (defun shen/shen\.dict-rm
+;;                              (Dict Key)
+;;                            (let* ((Count (shen/shen\.dict-count Dict))
+;;                                   (Contents (shen/<-address Dict 3))
+;;                                   (Exists (shen/<-address Contents Key)))
+;;                              (if (not Exists)
+;;                                  Key
+;;                                (progn
+;;                                  (remhash Key Contents)
+;;                                  (shen/address-> Dict 2 (1- Count))
+;;                                  Key)))))
+;;          (shen.dict-keys . (defun shen/shen\.dict-keys
+;;                                (Dict)
+;;                              (let* ((Contents (shen/<-address Dict 3)))
+;;                                (hash-table-keys Contents))))
+;;          (shen.dict-values . (defun shen/shen\.dict-values
+;;                                  (Dict)
+;;                                (let* ((Contents (shen/<-address Dict 3)))
+;;                                  (hash-table-values Contents))))
+;;          (shen.dict-fold . (defun shen/shen\.dict-fold
+;;                                (F Dict Acc)
+;;                              (let ((Contents (shen/<-address Dict 3)))
+;;                                (progn
+;;                                  (setq NewAcc Acc)
+;;                                  (maphash
+;;                                   (lambda (Key Value)
+;;                                     (setq NewAcc (shen/internal/apply-higher-order-function F (list Key Value NewAcc))))
+;;                                   Contents)
+;;                                  NewAcc))))
+;;          (put . (defun shen/put
+;;                     (X Pointer Y Dict)
+;;                   (let* ((Contents (shen/<-address Dict 3))
+;;                          (X-Contents (shen/<-address Contents X)))
+;;                     (if X-Contents
+;;                         (progn
+;;                           (puthash Pointer Y X-Contents)
+;;                           Y)
+;;                       (progn
+;;                         (setq X-Contents (shen/absvector 100))
+;;                         (puthash X X-Contents Contents)
+;;                         (puthash Pointer Y X-Contents)
+;;                         Y)))))
+;;          (unput . (defun shen/unput
+;;                       (X Pointer Dict)
+;;                     (let* ((Contents (shen/<-address Dict 3))
+;;                            (X-Contents (shen/<-address Contents X)))
+;;                       (progn
+;;                         (if X-Contents
+;;                             (remhash Pointer X-Contents))
+;;                         X))))
+;;          (get . (defun shen/get
+;;                     (X Pointer Dict)
+;;                   (let* ((Contents (shen/<-address Dict 3))
+;;                          (X-Contents (shen/<-address Contents X))
+;;                          (Pointer-Contents (if X-Contents (shen/<-address X-Contents Pointer))))
+;;                     (if (not Pointer-Contents)
+;;                         (shen/simple-error "value not found")
+;;                       Pointer-Contents))))))
 #+END_SRC
 ** Namespacing
 #+BEGIN_SRC elisp :tangle shen-primitives.el
@@ -1759,7 +1759,7 @@ from above are read into a hash table and will be spliced in [[Evaluating Bootst
           (shen/internal/add-overrides
            (append
             shen/internal/*performance-overrides*
-            shen/internal/*dict-overrides*
+            ;;shen/internal/*dict-overrides*
             shen/internal/*namespacing-overrides*
             shen/internal/*bugfix-overrides*)
            table)
