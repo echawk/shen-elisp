@@ -1,36 +1,15 @@
-"Copyright (c) 2015, Mark Tarver
+(defun declare (V12406 V12407) (let W12408 (shen.rectify-type V12407) (let W12409 (((((lambda Z12410 (lambda Z12411 (lambda Z12412 (lambda Z12413 (do (shen.incinfs) (shen.variancy (receive (shen.deref V12406 Z12410)) (receive (shen.deref W12408 Z12410)) Z12410 Z12411 Z12412 Z12413)))))) (shen.reset-prolog-vector)) (@v true (@v 0 (vector 0)))) 0) (freeze true)) (let W12414 (eval-kl (shen.prolog-abstraction V12407)) (let W12415 (set shen.*sigf* (shen.assoc-> V12406 W12414 (value shen.*sigf*))) V12406)))))
 
-All rights reserved.
+(defun shen.variancy (V12416 V12417 V12418 V12419 V12420 V12421) (if (shen.unlocked? V12419) (let W12422 (shen.newpv V12418) (shen.gc V12418 (do (shen.incinfs) (shen.system-S-h V12416 W12422 () V12418 V12419 V12420 (freeze (shen.variants? V12416 W12422 V12417 V12418 V12419 V12420 V12421)))))) false))
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of Mark Tarver may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
+(defun shen.variants? (V12423 V12424 V12425 V12426 V12427 V12428 V12429) (let W12430 (+ V12428 1) (let W12431 (if (shen.unlocked? V12427) (let W12432 (shen.lazyderef V12424 V12426) (let W12433 (freeze (do (shen.incinfs) (shen.cut V12426 V12427 W12430 V12429))) (if (= W12432 symbol) (thaw W12433) (if (shen.pvar? W12432) (shen.bind! W12432 symbol V12426 W12433) false)))) false) (if (= W12431 false) (let W12434 (if (shen.unlocked? V12427) (do (shen.incinfs) (is! V12424 V12425 V12426 V12427 W12430 V12429)) false) (if (= W12434 false) (let W12435 (if (shen.unlocked? V12427) (let W12436 (shen.newpv V12426) (shen.gc V12426 (do (shen.incinfs) (is W12436 (pr (cn "warning: changing the type of " (shen.app (shen.deref V12423 V12426) " may create errors
+" shen.a)) (stoutput)) V12426 V12427 W12430 V12429)))) false) (if (= W12435 false) (shen.unlock V12427 W12430) W12435)) W12434)) W12431))))
 
-THIS SOFTWARE IS PROVIDED BY Mark Tarver ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Mark Tarver BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+(defun shen.prolog-abstraction (V12437) (let W12438 (gensym B) (let W12439 (gensym L) (let W12440 (gensym Key) (let W12441 (gensym C) (let W12442 (gensym V) (let W12443 (shen.extract-vars V12437) (cons lambda (cons W12442 (cons (cons lambda (cons W12438 (cons (cons lambda (cons W12439 (cons (cons lambda (cons W12440 (cons (cons lambda (cons W12441 (cons (shen.stpart W12443 (cons is! (cons W12442 (cons (shen.rcons_form V12437) (cons W12438 (cons W12439 (cons W12440 (cons W12441 ()))))))) W12438) ()))) ()))) ()))) ()))) ()))))))))))
 
-(defun declare (V4123 V4124) (let Record (set shen.*signedfuncs* (cons (cons V4123 V4124) (value shen.*signedfuncs*))) (let Variancy (trap-error (shen.variancy-test V4123 V4124) (lambda E shen.skip)) (let Type (shen.rcons_form (shen.demodulate V4124)) (let F* (concat shen.type-signature-of- V4123) (let Parameters (shen.parameters 1) (let Clause (cons (cons F* (cons X ())) (cons :- (cons (cons (cons unify! (cons X (cons Type ()))) ()) ()))) (let AUM_instruction (shen.aum Clause Parameters) (let Code (shen.aum_to_shen AUM_instruction) (let ShenDef (cons define (cons F* (append Parameters (append (cons ProcessN (cons Continuation ())) (cons -> (cons Code ())))))) (let Eval (shen.eval-without-macros ShenDef) V4123)))))))))))
+(defun shen.demod (V12444) V12444)
 
-(defun shen.demodulate (V4126) (let Demod (shen.walk (value shen.*demodulation-function*) V4126) (if (= Demod V4126) V4126 (shen.demodulate Demod))))
-
-(defun shen.variancy-test (V4129 V4130) (let TypeF (shen.typecheck V4129 B) (let Check (if (= symbol TypeF) shen.skip (if (shen.variant? TypeF V4130) shen.skip (shen.prhush (cn "warning: changing the type of " (shen.app V4129 " may create errors
-" shen.a)) (stoutput)))) shen.skip)))
-
-(defun shen.variant? (V4143 V4144) (cond ((= V4144 V4143) true) ((and (cons? V4143) (and (cons? V4144) (= (hd V4144) (hd V4143)))) (shen.variant? (tl V4143) (tl V4144))) ((and (cons? V4143) (and (cons? V4144) (and (shen.pvar? (hd V4143)) (variable? (hd V4144))))) (shen.variant? (subst shen.a (hd V4143) (tl V4143)) (subst shen.a (hd V4144) (tl V4144)))) ((and (cons? V4143) (and (cons? (hd V4143)) (and (cons? V4144) (cons? (hd V4144))))) (shen.variant? (append (hd V4143) (tl V4143)) (append (hd V4144) (tl V4144)))) (true false)))
+(declare abort (cons --> (cons A ())))
 
 (declare absvector? (cons A (cons --> (cons boolean ()))))
 
@@ -46,9 +25,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare assoc (cons A (cons --> (cons (cons (cons list (cons (cons list (cons A ())) ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
 
+(declare atom? (cons A (cons --> (cons boolean ()))))
+
 (declare boolean? (cons A (cons --> (cons boolean ()))))
 
+(declare bootstrap (cons string (cons --> (cons string ()))))
+
 (declare bound? (cons symbol (cons --> (cons boolean ()))))
+
+(declare shen.ccons? (cons (cons list (cons A ())) (cons --> (cons boolean ()))))
 
 (declare cd (cons string (cons --> (cons string ()))))
 
@@ -56,19 +41,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare cn (cons string (cons --> (cons (cons string (cons --> (cons string ()))) ()))))
 
-(declare compile (cons (cons A (cons shen.==> (cons B ()))) (cons --> (cons (cons A (cons --> (cons (cons (cons A (cons --> (cons B ()))) (cons --> (cons B ()))) ()))) ()))))
+(declare compile (cons (cons (cons list (cons A ())) (cons --> (cons (cons str (cons (cons list (cons A ())) (cons B ()))) ()))) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons B ()))) ()))))
 
 (declare cons? (cons A (cons --> (cons boolean ()))))
 
-(declare destroy (cons (cons A (cons --> (cons B ()))) (cons --> (cons symbol ()))))
+(declare destroy (cons symbol (cons --> (cons symbol ()))))
 
 (declare difference (cons (cons list (cons A ())) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
 
 (declare do (cons A (cons --> (cons (cons B (cons --> (cons B ()))) ()))))
 
-(declare <e> (cons (cons list (cons A ())) (cons shen.==> (cons (cons list (cons B ())) ()))))
+(declare <e> (cons (cons list (cons A ())) (cons --> (cons (cons str (cons (cons list (cons A ())) (cons (cons list (cons B ())) ()))) ()))))
 
-(declare <!> (cons (cons list (cons A ())) (cons shen.==> (cons (cons list (cons A ())) ()))))
+(declare <!> (cons (cons list (cons A ())) (cons --> (cons (cons str (cons (cons list (cons B ())) (cons (cons list (cons A ())) ()))) ()))))
+
+(declare <end> (cons (cons list (cons A ())) (cons --> (cons (cons str (cons (cons list (cons A ())) (cons (cons list (cons B ())) ()))) ()))))
+
+(declare shen.parse-failure? (cons (cons str (cons (cons list (cons A ())) (cons B ()))) (cons --> (cons boolean ()))))
+
+(declare shen.parse-failure (cons --> (cons (cons str (cons (cons list (cons A ())) (cons B ()))) ())))
+
+(declare shen.<-out (cons (cons str (cons (cons list (cons A ())) (cons B ()))) (cons --> (cons B ()))))
+
+(declare shen.in-> (cons (cons str (cons (cons list (cons A ())) (cons B ()))) (cons --> (cons (cons list (cons A ())) ()))))
+
+(declare shen.comb (cons (cons list (cons A ())) (cons --> (cons (cons B (cons --> (cons (cons str (cons (cons list (cons A ())) (cons B ()))) ()))) ()))))
 
 (declare element? (cons A (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons boolean ()))) ()))))
 
@@ -82,9 +79,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare explode (cons A (cons --> (cons (cons list (cons string ())) ()))))
 
-(declare fail (cons --> (cons symbol ())))
+(declare factorise (cons symbol (cons --> (cons symbol ()))))
 
-(declare fail-if (cons (cons symbol (cons --> (cons boolean ()))) (cons --> (cons (cons symbol (cons --> (cons symbol ()))) ()))))
+(declare fail (cons --> (cons symbol ())))
 
 (declare fix (cons (cons A (cons --> (cons A ()))) (cons --> (cons (cons A (cons --> (cons A ()))) ()))))
 
@@ -92,9 +89,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare fst (cons (cons A (cons * (cons B ()))) (cons --> (cons A ()))))
 
-(declare function (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons A (cons --> (cons B ()))) ()))))
-
 (declare gensym (cons symbol (cons --> (cons symbol ()))))
+
+(declare shen.hds=? (cons (cons list (cons A ())) (cons --> (cons (cons A (cons --> (cons boolean ()))) ()))))
 
 (declare <-vector (cons (cons vector (cons A ())) (cons --> (cons (cons number (cons --> (cons A ()))) ()))))
 
@@ -114,6 +111,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare if (cons boolean (cons --> (cons (cons A (cons --> (cons (cons A (cons --> (cons A ()))) ()))) ()))))
 
+(declare in-package (cons symbol (cons --> (cons symbol ()))))
+
 (declare it (cons --> (cons string ())))
 
 (declare implementation (cons --> (cons string ())))
@@ -132,13 +131,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare intersection (cons (cons list (cons A ())) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
 
-(declare kill (cons --> (cons A ())))
-
 (declare language (cons --> (cons string ())))
 
 (declare length (cons (cons list (cons A ())) (cons --> (cons number ()))))
 
 (declare limit (cons (cons vector (cons A ())) (cons --> (cons number ()))))
+
+(declare lineread (cons (cons stream (cons in ())) (cons --> (cons (cons list (cons unit ())) ()))))
 
 (declare load (cons string (cons --> (cons symbol ()))))
 
@@ -180,19 +179,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare print (cons A (cons --> (cons A ()))))
 
-(declare profile (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons A (cons --> (cons B ()))) ()))))
+(declare profile (cons symbol (cons --> (cons symbol ()))))
 
 (declare preclude (cons (cons list (cons symbol ())) (cons --> (cons (cons list (cons symbol ())) ()))))
 
 (declare shen.proc-nl (cons string (cons --> (cons string ()))))
 
-(declare profile-results (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons (cons A (cons --> (cons B ()))) (cons * (cons number ()))) ()))))
+(declare profile-results (cons symbol (cons --> (cons (cons symbol (cons * (cons number ()))) ()))))
 
-(declare protect (cons symbol (cons --> (cons symbol ()))))
+(declare protect (cons A (cons --> (cons A ()))))
 
 (declare preclude-all-but (cons (cons list (cons symbol ())) (cons --> (cons (cons list (cons symbol ())) ()))))
 
 (declare shen.prhush (cons string (cons --> (cons (cons (cons stream (cons out ())) (cons --> (cons string ()))) ()))))
+
+(declare prolog-memory (cons number (cons --> (cons number ()))))
 
 (declare ps (cons symbol (cons --> (cons (cons list (cons unit ())) ()))))
 
@@ -208,6 +209,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare read-from-string (cons string (cons --> (cons (cons list (cons unit ())) ()))))
 
+(declare read-from-string-unprocessed (cons string (cons --> (cons (cons list (cons unit ())) ()))))
+
 (declare release (cons --> (cons string ())))
 
 (declare remove (cons A (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
@@ -218,15 +221,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare snd (cons (cons A (cons * (cons B ()))) (cons --> (cons B ()))))
 
-(declare specialise (cons symbol (cons --> (cons symbol ()))))
+(declare specialise (cons symbol (cons --> (cons (cons number (cons --> (cons symbol ()))) ()))))
 
 (declare spy (cons symbol (cons --> (cons boolean ()))))
 
 (declare step (cons symbol (cons --> (cons boolean ()))))
 
 (declare stinput (cons --> (cons (cons stream (cons in ())) ())))
-
-(declare sterror (cons --> (cons (cons stream (cons out ())) ())))
 
 (declare stoutput (cons --> (cons (cons stream (cons out ())) ())))
 
@@ -266,11 +267,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 
 (declare union (cons (cons list (cons A ())) (cons --> (cons (cons (cons list (cons A ())) (cons --> (cons (cons list (cons A ())) ()))) ()))))
 
-(declare unprofile (cons (cons A (cons --> (cons B ()))) (cons --> (cons (cons A (cons --> (cons B ()))) ()))))
+(declare unprofile (cons symbol (cons --> (cons symbol ()))))
 
 (declare untrack (cons symbol (cons --> (cons symbol ()))))
-
-(declare unspecialise (cons symbol (cons --> (cons symbol ()))))
 
 (declare variable? (cons A (cons --> (cons boolean ()))))
 
@@ -303,6 +302,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 (declare * (cons number (cons --> (cons (cons number (cons --> (cons number ()))) ()))))
 
 (declare == (cons A (cons --> (cons (cons B (cons --> (cons boolean ()))) ()))))
-
-
 

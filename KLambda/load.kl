@@ -1,59 +1,43 @@
-"Copyright (c) 2015, Mark Tarver
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of Mark Tarver may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY Mark Tarver ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Mark Tarver BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-
-(defun load (V1673) (let Load (let Start (get-time run) (let Result (shen.load-help (value shen.*tc*) (read-file V1673)) (let Finish (get-time run) (let Time (- Finish Start) (let Message (shen.prhush (cn "
-run time: " (cn (str Time) " secs
-")) (stoutput)) Result))))) (let Infs (if (value shen.*tc*) (shen.prhush (cn "
+(defun load (V7622) (let W7623 (value shen.*tc*) (let W7624 (let W7625 (get-time run) (let W7626 (shen.load-help W7623 (read-file V7622)) (let W7627 (get-time run) (let W7628 (- W7627 W7625) (let W7629 (pr (cn "
+run time: " (cn (str W7628) " secs
+")) (stoutput)) W7626))))) (let W7630 (if W7623 (pr (cn "
 typechecked in " (shen.app (inferences) " inferences
-" shen.a)) (stoutput)) shen.skip) loaded)))
+" shen.a)) (stoutput)) shen.skip) loaded))))
 
-(defun shen.load-help (V1680 V1681) (cond ((= false V1680) (shen.for-each (lambda X (shen.prhush (shen.app (shen.eval-without-macros X) "
-" shen.s) (stoutput))) V1681)) (true (let RemoveSynonyms (mapcan (lambda X (shen.remove-synonyms X)) V1681) (let Table (mapcan (lambda X (shen.typetable X)) RemoveSynonyms) (let Assume (shen.for-each (lambda X (shen.assumetype X)) Table) (trap-error (shen.for-each (lambda X (shen.typecheck-and-load X)) RemoveSynonyms) (lambda E (shen.unwind-types E Table)))))))))
+(defun shen.load-help (V7633 V7634) (cond ((= false V7633) (shen.eval-and-print V7634)) (true (shen.check-eval-and-print V7634))))
 
-(defun shen.remove-synonyms (V1683) (cond ((and (cons? V1683) (= shen.synonyms-help (hd V1683))) (do (eval V1683) ())) (true (cons V1683 ()))))
+(defun shen.eval-and-print (V7635) (map (lambda Z7636 (pr (shen.app (eval-kl (shen.shen->kl Z7636)) "
+" shen.s) (stoutput))) V7635))
 
-(defun shen.typecheck-and-load (V1685) (do (nl 1) (shen.typecheck-and-evaluate V1685 (gensym A))))
+(defun shen.check-eval-and-print (V7637) (let W7638 (mapcan (lambda Z7639 (shen.typetable Z7639)) V7637) (let W7640 (trap-error (shen.assumetypes W7638) (lambda Z7641 (shen.unwind-types Z7641 W7638))) (trap-error (shen.work-through V7637) (lambda Z7642 (shen.unwind-types Z7642 W7638))))))
 
-(defun shen.typetable (V1691) (cond ((and (cons? V1691) (and (= define (hd V1691)) (cons? (tl V1691)))) (let Sig (compile (lambda Y (shen.<sig+rest> Y)) (tl (tl V1691)) (lambda E (simple-error (shen.app (hd (tl V1691)) " lacks a proper signature.
-" shen.a)))) (cons (cons (hd (tl V1691)) Sig) ()))) (true ())))
+(defun shen.typetable (V7647) (cond ((and (cons? V7647) (and (= define (hd V7647)) (and (cons? (tl V7647)) (and (cons? (tl (tl V7647))) (= { (hd (tl (tl V7647)))))))) (cons (hd (tl V7647)) (cons (shen.rectify-type (shen.type-F (hd (tl V7647)) (tl (tl (tl V7647))))) ()))) ((and (cons? V7647) (and (= define (hd V7647)) (cons? (tl V7647)))) (simple-error (cn "missing { in " (shen.app (hd (tl V7647)) "
+" shen.a)))) (true ())))
 
-(defun shen.assumetype (V1693) (cond ((cons? V1693) (declare (hd V1693) (tl V1693))) (true (shen.f_error shen.assumetype))))
+(defun shen.type-F (V7654 V7655) (cond ((and (cons? V7655) (= } (hd V7655))) ()) ((cons? V7655) (cons (hd V7655) (shen.type-F V7654 (tl V7655)))) (true (simple-error (cn "missing } in " (shen.app V7654 "
+" shen.a))))))
 
-(defun shen.unwind-types (V1700 V1701) (cond ((= () V1701) (simple-error (error-to-string V1700))) ((and (cons? V1701) (cons? (hd V1701))) (do (shen.remtype (hd (hd V1701))) (shen.unwind-types V1700 (tl V1701)))) (true (shen.f_error shen.unwind-types))))
+(defun shen.assumetypes (V7658) (cond ((= () V7658) ()) ((and (cons? V7658) (cons? (tl V7658))) (do (declare (hd V7658) (hd (tl V7658))) (shen.assumetypes (tl (tl V7658))))) (true (simple-error "implementation error in shen.assumetype"))))
 
-(defun shen.remtype (V1703) (set shen.*signedfuncs* (shen.removetype V1703 (value shen.*signedfuncs*))))
+(defun shen.unwind-types (V7663 V7664) (cond ((and (cons? V7664) (cons? (tl V7664))) (do (destroy (hd V7664)) (shen.unwind-types V7663 (tl (tl V7664))))) (true (simple-error (error-to-string V7663)))))
 
-(defun shen.removetype (V1711 V1712) (cond ((= () V1712) ()) ((and (cons? V1712) (and (cons? (hd V1712)) (= (hd (hd V1712)) V1711))) (shen.removetype (hd (hd V1712)) (tl V1712))) ((cons? V1712) (cons (hd V1712) (shen.removetype V1711 (tl V1712)))) (true (shen.f_error shen.removetype))))
+(defun shen.work-through (V7667) (cond ((= () V7667) ()) ((and (cons? V7667) (and (cons? (tl V7667)) (and (cons? (tl (tl V7667))) (= (hd (tl V7667)) (intern ":"))))) (let W7668 (shen.typecheck (hd V7667) (hd (tl (tl V7667)))) (if (= W7668 false) (shen.type-error) (let W7669 (eval-kl (shen.shen->kl (hd V7667))) (let W7670 (pr (shen.app W7669 (cn " : " (shen.app (shen.pretty-type W7668) "
+" shen.r)) shen.s) (stoutput)) (shen.work-through (tl (tl (tl V7667))))))))) ((cons? V7667) (shen.work-through (cons (hd V7667) (cons (intern ":") (cons A (tl V7667)))))) (true (simple-error "implementation error in shen.work-through"))))
 
-(defun shen.<sig+rest> (V1714) (let Parse_shen.<signature> (shen.<signature> V1714) (if (not (= (fail) Parse_shen.<signature>)) (let Parse_<!> (<!> Parse_shen.<signature>) (if (not (= (fail) Parse_<!>)) (shen.pair (hd Parse_<!>) (shen.hdtl Parse_shen.<signature>)) (fail))) (fail))))
+(defun shen.pretty-type (V7672) (cond ((and (cons? V7672) (and (cons? (hd V7672)) (and (= list (hd (hd V7672))) (and (cons? (tl (hd V7672))) (and (= () (tl (tl (hd V7672)))) (and (cons? (tl V7672)) (and (= --> (hd (tl V7672))) (and (cons? (tl (tl V7672))) (and (cons? (hd (tl (tl V7672)))) (and (= str (hd (hd (tl (tl V7672))))) (and (cons? (tl (hd (tl (tl V7672))))) (and (cons? (hd (tl (hd (tl (tl V7672)))))) (and (= list (hd (hd (tl (hd (tl (tl V7672))))))) (and (cons? (tl (hd (tl (hd (tl (tl V7672))))))) (and (= () (tl (tl (hd (tl (hd (tl (tl V7672)))))))) (and (cons? (tl (tl (hd (tl (tl V7672)))))) (and (= () (tl (tl (tl (hd (tl (tl V7672))))))) (and (= () (tl (tl (tl V7672)))) (= (hd (tl (hd V7672))) (hd (tl (hd (tl (hd (tl (tl V7672)))))))))))))))))))))))))) (cons (hd (tl (hd (tl (tl V7672))))) (cons ==> (tl (tl (hd (tl (tl V7672)))))))) ((cons? V7672) (map (lambda Z7673 (shen.pretty-type Z7673)) V7672)) (true V7672)))
 
-(defun write-to-file (V1717 V1718) (let Stream (open V1717 out) (let String (if (string? V1718) (shen.app V1718 "
+(defun shen.type-error () (simple-error "type error
+"))
 
-" shen.a) (shen.app V1718 "
+(defun bootstrap (V7674) (let W7675 (shen.klfile V7674) (let W7676 (read-file V7674) (let W7677 (open W7675 out) (let W7678 (map (lambda Z7679 (shen.partial (shen.shen->kl-h Z7679))) W7676) (let W7680 (shen.write-kl W7678 W7677) W7675))))))
 
-" shen.s)) (let Write (pr String Stream) (let Close (close Stream) V1718)))))
+(defun shen.partial (V7681) (cond ((and (cons? V7681) (and (= shen.f-error (hd V7681)) (and (cons? (tl V7681)) (= () (tl (tl V7681)))))) (cons simple-error (cons (cn "partial function " (str (hd (tl V7681)))) ()))) ((cons? V7681) (map (lambda Z7682 (shen.partial Z7682)) V7681)) (true V7681)))
 
+(defun shen.write-kl (V7685 V7686) (cond ((= () V7685) (close V7686)) ((and (cons? V7685) (cons? (hd V7685))) (shen.write-kl (tl V7685) (do (shen.write-kl-h (hd V7685) V7686) V7686))) ((cons? V7685) (shen.write-kl (tl V7685) V7686)) (true (simple-error "partial function shen.write-kl"))))
 
+(defun shen.write-kl-h (V7689 V7690) (cond ((and (cons? V7689) (and (= defun (hd V7689)) (and (cons? (tl V7689)) (and (= fail (hd (tl V7689))) (and (cons? (tl (tl V7689))) (and (= () (hd (tl (tl V7689)))) (and (cons? (tl (tl (tl V7689)))) (= () (tl (tl (tl (tl V7689)))))))))))) (pr "(defun fail () shen.fail!)" V7690)) (true (pr (shen.app V7689 "
+
+" shen.r) V7690))))
+
+(defun shen.klfile (V7691) (cond ((= "" V7691) ".kl") ((= ".shen" V7691) ".kl") ((shen.+string? V7691) (@s (hdstr V7691) (shen.klfile (tlstr V7691)))) (true (simple-error "partial function shen.klfile"))))
 
