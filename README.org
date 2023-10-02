@@ -16,6 +16,30 @@ Also note the installation will emit a large number of byte-compiler warnings.
 Nothing to worry about but they are annoying and my attempts to silence them
 have thus far failed.
 
+** Updating the Shen version
+
+Here is a little code snippet that you can run to update the
+vendored shen version to an arbitrary version:
+#+begin_src elisp
+(defun update (version)
+  "update shen-elisp to shen VERSION."
+  (progn
+    (url-retrieve-synchronously
+     (concat "https://www.shenlanguage.org/Download/" version ".zip"))
+    (shell-command (concat "unzip " version ".zip"))
+    (dolist (klfile
+             (nthcdr 2 (directory-files (concat version "/KLambda/") nil)))
+      (copy-file (concat version "/KLambda/" klfile)
+                 (concat "KLambda/" klfile) t))
+    (message "Updated KLambda/, may need to update shen-elisp.org...")
+    (org-babel-tangle-file "shen-elisp.org")
+    (load-file "shen-primitives.el")
+    (load-file "install.el")
+    (runner)))
+
+(update "S35")
+#+end_src
+
 ** Manual Download and Setup
 Download shen-elisp onto your system somewhere.
 #+begin_src elisp
