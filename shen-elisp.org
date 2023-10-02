@@ -390,8 +390,10 @@ Since KLambda code tends to allocate huge vectors and resize often, switching
 from vectors to hash-tables where resizing is natively supported led to 4-5x
 speed-ups across the board.
 #+BEGIN_SRC elisp :tangle shen-primitives.el
-  (defsubst shen/absvector (N) (make-hash-table :size N :rehash-size 3.0 :test 'shen/internal/hash-table-test))
   (defsubst shen/address-> (Vector N Value) (progn (puthash N Value Vector) Vector))
+  (defsubst shen/absvector (N)
+    (let ((ht (make-hash-table :size N :rehash-size 3.0 :test 'shen/internal/hash-table-test)))
+     (dolist (n (number-sequence 0 (- N 1))) (puthash n 'shen.fail! ht)) ht))
   (defsubst shen/<-address (Vector N) (gethash N Vector))
   (defsubst shen/absvector? (X) (shen/internal/predicate->shen (hash-table-p X)))
 #+END_SRC
