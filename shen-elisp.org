@@ -2141,9 +2141,11 @@ package.
   (setq *klambda-directory* (file-name-as-directory (concat (file-name-directory load-file-name) *klambda-directory-name*)))
   (setq *klambda-files*
         (mapcar (lambda (klFile) (concat *klambda-directory* klFile))
-                '("toplevel.kl" "core.kl" "sys.kl" "dict.kl" "sequent.kl"
-                  "yacc.kl" "reader.kl" "prolog.kl" "track.kl" "load.kl"
-                  "writer.kl" "macros.kl" "declarations.kl" "t-star.kl" "types.kl")))
+            '("sys.kl" "writer.kl" "core.kl"
+              "reader.kl" "declarations.kl"
+              "toplevel.kl" "macros.kl" "load.kl"
+              "prolog.kl" "sequent.kl" "track.kl"
+              "t-star.kl" "yacc.kl" "types.kl")))
 #+END_SRC
 
 In order to read in the KLambda s-expressions using the Elisp reader we need to
