@@ -75,6 +75,7 @@
 (shen/set '*release* emacs-version)
 (shen/set '*port* 1.7)
 (shen/set '*os* (symbol-name system-type))
+(shen/set '*version* "S38.1")
 ;; KLambda Constants:1 ends here
 
 ;; [[file:shen-elisp.org::*Boolean Operations][Boolean Operations:1]]
@@ -234,8 +235,10 @@
 ;; Error Handling:1 ends here
 
 ;; [[file:shen-elisp.org::*Vectors][Vectors:1]]
-(defsubst shen/absvector (N) (make-hash-table :size N :rehash-size 3.0 :test 'shen/internal/hash-table-test))
 (defsubst shen/address-> (Vector N Value) (progn (puthash N Value Vector) Vector))
+(defsubst shen/absvector (N)
+  (let ((ht (make-hash-table :size N :rehash-size 3.0 :test 'shen/internal/hash-table-test)))
+   (dolist (n (number-sequence 0 (- N 1))) (puthash n 'shen.fail! ht)) ht))
 (defsubst shen/<-address (Vector N) (gethash N Vector))
 (defsubst shen/absvector? (X) (shen/internal/predicate->shen (hash-table-p X)))
 ;; Vectors:1 ends here
