@@ -2142,7 +2142,7 @@ package.
   (setq *klambda-directory* (file-name-as-directory (concat (file-name-directory load-file-name) *klambda-directory-name*)))
   (setq *klambda-files*
         (mapcar (lambda (klFile) (concat *klambda-directory* klFile))
-            '("sys.kl" "writer.kl" "core.kl"
+            '("sys.kl" "writer.kl" "core.kl" "dict.kl"
               "reader.kl" "declarations.kl"
               "toplevel.kl" "macros.kl" "load.kl"
               "prolog.kl" "sequent.kl" "track.kl"
