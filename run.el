@@ -18,4 +18,4 @@
       (load-file "install.el")
       (runner))))
 
-(update "38.1")
+(update "39.0")
